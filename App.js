@@ -1,13 +1,40 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { env } from 'node:process';
+import React, { useState } from 'react';
+import { StyleSheet, Input, View, Form } from 'react-native';
 
-export default function App() {
+const App = () => {
+  const [imgur, setImgur] = useState([]);
+
+  async function callImgur(tag) {
+    console.log(tag)
+    const uri = `https://api.imgur.com/3/gallery/t/${tag}`;
+    await axios.get(uri, {
+      headers: {
+        Authorization: `ClientID${env.CLIENT_ID}`
+      }
+    }).then((response) => {
+      console.log(response)
+    });
+  }
+
   return (
+    // <h1>test ta mère</h1>
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Form>
+        <Input
+          placeholder="Tag of imgur"
+          // style={styles.input}
+          onSubmit={event => callImgur(event.target.value)}
+        />
+      </Form>
+      {/* <View>
+      {imgur.map((title) => <Text>{title}</Text>)}
+    </View> */}
     </View>
   );
 }
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
