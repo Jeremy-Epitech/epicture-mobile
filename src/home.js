@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Text, Form, Button, View, StyleSheet, TextInput } from 'react-native';
+import { Text, ImageBackground, Button, View, StyleSheet, TextInput } from 'react-native';
 import axios from 'axios';
 import env from '../variables';
 
@@ -51,16 +51,27 @@ export default class home extends Component {
                 imgs: img,
                 date: element.datetime
             };
-            this.state.images.push(imgData)
+            this.setState({
+                images: [...this.state.images, imgData],
+            })
         })
     };
 
     render() {
-        const imgList = this.state.images.map((title) => {
+        const imgList = this.state.images.map((data, i) => {
             return (
-                <View><Text>{title}</Text></View>
+                <View key={i}>
+                    <View style={styles.imgContainer}>
+                        <Text >{data.title}</Text>
+
+                        <ImageBackground style={styles.images} source={data.imgs.img} >
+                            {/* {data.imgs.img} */}
+                        </ImageBackground>
+                    </View>
+                    {/* <Image styles={styles.images}>{data.imgs.img}</Image> */}
+                </View>
             )
-        })
+        });
         return (
             // <h1>ezzabu</h1>
             <View style={styles.container}>
@@ -87,6 +98,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#5f5f5f',
     },
+    imgContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        padding: 3,
+    },
     input: {
         // width: 200,
         // height: 44,
@@ -108,4 +125,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderRadius: 25,
     },
+    images: {
+        position: 'absolute',
+        width: 50,
+        height: 75,
+    }
 });
