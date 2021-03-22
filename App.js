@@ -1,40 +1,26 @@
-import { env } from 'node:process';
-import React, { useState } from 'react';
-import { StyleSheet, Input, View, Form } from 'react-native';
+import 'react-native-gesture-handler';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createStackNavigator } from '@react-navigation/stack';
+// import Home from './components/home'
+import Login from './components/login'
 
-const App = () => {
-  const [imgur, setImgur] = useState([]);
+// const Stack = createStackNavigator();
 
-  async function callImgur(tag) {
-    console.log(tag)
-    const uri = `https://api.imgur.com/3/gallery/t/${tag}`;
-    await axios.get(uri, {
-      headers: {
-        Authorization: `ClientID${env.CLIENT_ID}`
-      }
-    }).then((response) => {
-      console.log(response)
-    });
-  }
-
+export default function App() {
   return (
-    // <h1>test ta mère</h1>
-    <View style={styles.container}>
-      <Form>
-        <Input
-          placeholder="Tag of imgur"
-          // style={styles.input}
-          onSubmit={event => callImgur(event.target.value)}
-        />
-      </Form>
-      {/* <View>
-      {imgur.map((title) => <Text>{title}</Text>)}
-    </View> */}
-    </View>
+    // <NavigationContainer>
+    //   <Stack.Navigator>
+    //     <Stack.Screen
+    //       name="Home"
+    //       component={Login}
+    //     />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
+    <h1>d</h1>
   );
 }
-
-export default App;
 
 const styles = StyleSheet.create({
   container: {
