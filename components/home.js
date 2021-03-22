@@ -9,7 +9,7 @@ export default class home extends Component {
         super(props);
 
         this.state = {
-            images: [],
+            imagesDetails: [],
         };
     }
 
@@ -33,8 +33,8 @@ export default class home extends Component {
     pushImgs(res) {
         res.forEach(element => {
             let img;
-            if (element.images) {
-                element.images.forEach(image => {
+            if (element.imagesDetails) {
+                element.imagesDetails.forEach(image => {
                     img = {
                         description: image.title,
                         img: image.link
@@ -47,31 +47,50 @@ export default class home extends Component {
                 }
             }
             const imgData = {
-                title: element.title,
                 imgs: img,
+                title: element.title,
                 date: element.datetime
             };
+
             this.setState({
-                images: [...this.state.images, imgData],
-            })
+                imagesDetails: [...this.state.imagesDetails, imgData],
+            });
         })
     };
 
-    render() {
-        const imgList = this.state.images.map((data, i) => {
+    displayImg() {
+        const imagesDetails = this.state.imagesDetails.map((data, i) => {
+            return (
+                <View key={i}>
+                    <Text >{data.imgs.img.description}</Text>
+                    <ImageBackground style={styles.imagesDetails} source={data.imgs.img} >
+                    </ImageBackground>
+                </View>
+            )
+        })
+
+        const List = this.state.imagesDetails.map((data, i) => {
             return (
                 <View key={i}>
                     <View style={styles.imgContainer}>
                         <Text >{data.title}</Text>
-
-                        <ImageBackground style={styles.images} source={data.imgs.img} >
-                            {/* {data.imgs.img} */}
+                        {imagesDetails}
+                        {/* <ImageBackground style={styles.imagesDetails} source={data.imgs.img} >
+                            {data.imgs.img} 
                         </ImageBackground>
+                        {imgList} */}
                     </View>
-                    {/* <Image styles={styles.images}>{data.imgs.img}</Image> */}
+                    {/* <Image styles={styles.imagesDetails}>{data.imgs.img}</Image> */}
                 </View>
             )
         });
+        return List;
+    }
+
+    render() {
+        console.log(this.state.imagesDetails)
+        const List = this.displayImg();
+
         return (
             // <h1>ezzabu</h1>
             <View style={styles.container}>
@@ -82,9 +101,9 @@ export default class home extends Component {
                         onSubmit={event => callImgur(event.target.value)}
                     />
                 </View>
-                {imgList}
+                {List}
                 {/* <View>
-                {images.map((title) => <Text>{title}</Text>)}
+                {imagesDetails.map((title) => <Text>{title}</Text>)}
             </View> */}
             </View>
         );
@@ -125,8 +144,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderRadius: 25,
     },
-    images: {
-        position: 'absolute',
+    imagesDetails: {
+        position: 'relative',
         width: 50,
         height: 75,
     }
