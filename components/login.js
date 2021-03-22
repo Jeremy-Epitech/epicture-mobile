@@ -1,30 +1,34 @@
 import React from 'react';
 import * as AuthSession from 'expo-auth-session';
 import { Text, View, TouchableOpacity } from 'react-native';
+import imgur from '../constants/imgur';
 
 export default class Login extends React.Component {
-    apiKey = '839f1758e3815fb'
     // redirectUrl = "localhost:19006"
+    token = "559d66228b87e3babd22192d214b8a6cf5219f73";
+    constructor(props) {
+        super(props);
 
-    state = {
-        user: {},
+        this.state = {
+            user: null,
+        };
     }
 
     login = async () => {
         console.log('ok');
-        let user = null;
 
-        if (!user) {
+        if (this.state.user == null) {
             let redirectUrl = 'https://google.com/';
-            user = (await AuthSession.startAsync({
-                authUrl: `https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${this.apiKey}`,
+            const resp = (await AuthSession.startAsync({
+                authUrl: `https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`,
                 returnUrl: redirectUrl
             })).params;
+            console.log(resp)
         } else {
-            console.log('already logged as ' + user.account_username);
+            console.log('already logged as ' + this.state.user.account_username);
         }
 
-        console.log("user:", user)
+        console.log("user:", this.state.user)
     }
 
     render() {
