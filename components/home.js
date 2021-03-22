@@ -1,8 +1,8 @@
 import React, { Component, useState } from 'react';
-import { Text, ImageBackground, Button, View, StyleSheet, TextInput } from 'react-native';
+import { Text, ImageBackground, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
 import DisplayImg from './displayImg';
 import axios from 'axios';
-import env from '../variables';
+import imgur from '../constants/imgur';
 
 
 export default class Home extends Component {
@@ -21,9 +21,9 @@ export default class Home extends Component {
 
 
     callImgur() {
-        axios.get(`${env.dev.apiUrl}/3/gallery/hot/viral`, {
+        axios.get(`${imgur.dev.apiUrl}/3/gallery/hot/viral`, {
             headers: {
-                Authorization: `Client-ID ${env.client.CLIENT_ID}`
+                Authorization: `Client-ID ${imgur.client.CLIENT_ID}`
             }
         }).then(response => {
             this.pushImgs(response.data.data);
@@ -67,16 +67,22 @@ export default class Home extends Component {
             // <h1>ezzabu</h1>
             <View style={styles.container}>
                 <View style={styles.fixToText}>
-                    <Button style={styles.button}
-                        title='le button'>
-                    </Button>
-                    <Button
+                    <TouchableOpacity
                         style={styles.button}
-                        title="Home page"
+                        title=""
+                        onPress={() =>
+                            this.props.navigation.navigate('Login')
+                        }>
+                        <Text style={styles.text}>Login page</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        title=""
                         onPress={() =>
                             this.props.navigation.navigate('Home')
-                        }
-                    />
+                        }>
+                        <Text style={styles.text}>Home page</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <DisplayImg images={this.state.images}></DisplayImg>
@@ -88,16 +94,23 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#007c91',
         alignItems: 'center',
-        padding: 10,
         justifyContent: 'center',
-        backgroundColor: '#5f5f5f',
     },
     button: {
+        width: "80%",
+        backgroundColor: "#00b5ad",
         borderRadius: 25,
-        borderColor: 'black',
-        backgroundColor: 'grey',
-        textAlign: 'center'
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 40,
+        marginBottom: 10
+        // borderRadius: 25,
+        // borderColor: 'black',
+        // backgroundColor: 'grey',
+        // textAlign: 'center'
     },
     fixToText: {
         flexDirection: 'row',

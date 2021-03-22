@@ -1,7 +1,5 @@
 import React, { Component, useState } from 'react';
 import { Text, ImageBackground, Button, View, StyleSheet, TextInput } from 'react-native';
-import axios from 'axios';
-import env from '../variables';
 
 
 export default class DisplayImg extends Component {

@@ -35,8 +35,11 @@ export default class Login extends React.Component {
                 <TouchableOpacity style={styles.loginBtn} onPress={this.login}>
                     <Text style={styles.loginText}>Se connecter</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={styles.loginText}>Continuer sans se connecter</Text>
+                <TouchableOpacity
+                    onPress={() =>
+                        this.props.navigation.navigate('Home')
+                    }>
+                    <Text>Continuer sans se connecter</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -46,7 +49,7 @@ export default class Login extends React.Component {
 const styles = {
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#007c91',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -67,6 +70,8 @@ const styles = {
         marginBottom: 10
     },
     loginText: {
-        color: "black"
+        color: "white",
+        fontSize: 18,
+        fontWeight: "bold"
     }
 }
