@@ -1,7 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Text, ImageBackground, Button, View, StyleSheet, TextInput } from 'react-native';
-import axios from 'axios';
-import env from '../variables';
+import { Text, Image, ScrollView, View, StyleSheet, Dimensions } from 'react-native';
 
 
 export default class DisplayImg extends Component {
@@ -10,7 +8,6 @@ export default class DisplayImg extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props)
 
     }
 
@@ -22,7 +19,7 @@ export default class DisplayImg extends Component {
                     {data.imgs.img.slice((data.imgs.img.length - 4), data.imgs.img.length) != '.mp4' &&
                         <View style={styles.imgContainer}>
                             <Text style={styles.text} >{data.title}</Text>
-                            <ImageBackground style={styles.images} source={data.imgs.img} ></ImageBackground>
+                            <Image style={styles.images} resizeMode={"contain"} source={{ uri: data.imgs.img }} ></Image>
                         </View>
                     }
                 </View>
@@ -31,8 +28,10 @@ export default class DisplayImg extends Component {
 
         return (
             // <h1>ezzabu</h1>
-            <View style={styles.container}>
-                {this.props.images.length > 1 && List}
+            <View>
+                <ScrollView>
+                    {this.props.images.length > 1 && List}
+                </ScrollView>
             </View>
         );
     }
@@ -42,8 +41,7 @@ const styles = StyleSheet.create({
     imgContainer: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-around',
-        padding: 3,
+        justifyContent: 'center',
     },
     text: {
         color: "white",
@@ -52,7 +50,7 @@ const styles = StyleSheet.create({
     },
     images: {
         position: 'relative',
-        width: 50,
-        height: 75,
+        width: Dimensions.get('window').width - 25,
+        height: Dimensions.get('window').height,
     }
 });
