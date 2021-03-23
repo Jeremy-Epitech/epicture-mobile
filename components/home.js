@@ -1,5 +1,8 @@
 import React, { Component, useState } from 'react';
-import { Text, ImageBackground, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, ScrollView, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { getData } from './function';
 import DisplayImg from './displayImg';
 import axios from 'axios';
 import imgur from '../constants/imgur';
@@ -11,11 +14,16 @@ export default class Home extends Component {
 
         this.state = {
             images: [],
+            user: null,
         };
     }
 
     componentDidMount() {
         this.callImgur();
+        this.setState({
+            user: getData('access_token')
+        })
+        console.log(this.state)
     }
 
 
@@ -93,22 +101,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#007c91',
+        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
     button: {
-        width: "80%",
         backgroundColor: "#00b5ad",
         borderRadius: 25,
         height: 50,
         alignItems: "center",
         justifyContent: "center",
         marginTop: 40,
-        marginBottom: 10
-        // borderRadius: 25,
-        // borderColor: 'black',
-        // backgroundColor: 'grey',
-        // textAlign: 'center'
+        marginBottom: 10,
+        padding: 20
     },
     fixToText: {
         flexDirection: 'row',
@@ -130,9 +135,4 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderRadius: 25,
     },
-    images: {
-        position: 'relative',
-        width: 50,
-        height: 75,
-    }
 });
