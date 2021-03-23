@@ -18,7 +18,7 @@ export default class Login extends React.Component {
         console.log('ok');
 
         if (this.state.user == null) {
-            let redirectUrl = 'https://google.com/';
+            let redirectUrl = 'https://epic.nayet.pineau/callback';
             const resp = (await AuthSession.startAsync({
                 authUrl: `https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`,
                 returnUrl: redirectUrl
