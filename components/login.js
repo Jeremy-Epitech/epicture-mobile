@@ -1,11 +1,10 @@
 import React from 'react';
-import * as AuthSession from 'expo-auth-session';
 import { Text, View, TouchableOpacity, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { parseURl } from './function';
 import imgur from '../constants/imgur';
 
 export default class Login extends React.Component {
-    // redirectUrl = "localhost:19006"
-    token = "559d66228b87e3babd22192d214b8a6cf5219f73";
     constructor(props) {
         super(props);
 
@@ -14,40 +13,88 @@ export default class Login extends React.Component {
         };
     }
 
+    componentDidMount() {
+        console.log(this.getData());
+    }
+
+    storeData = async (value) => {
+        try {
+            await AsyncStorage.setItem('token', value)
+        } catch (e) {
+            // saving error
+        }
+    }
+
+    getData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('token')
+            if (value !== null) {
+                // value previously stored
+            }
+        } catch (e) {
+            // error reading value
+        }
+    }
+
     login = async () => {
         console.log('ok');
 
         if (this.state.user == null) {
-
-            // let redirectUrl = 'https://www.Epicture-Pineau-Nayet.com/';
-            // const resp = (await AuthSession.startAsync({
-            //     authUrl: `https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`,
-            //     returnUrl: redirectUrl
-            // })).params;
             const res = await Linking.openURL(`https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`)
-            console.log(window.location.href)
+            const url = window.location.href;
+
+            const { access_token, account_id, account_username, expires_in, refresh_token, token_type } = parseURl(url);
+            this.setState({
+                user: { access_token, account_id, account_username, expires_in, refresh_token, token_type }
+            });
+
+            this.storeData(access_token);
 
         } else {
             console.log('already logged as ' + this.state.user.account_username);
         }
-
-        console.log("user:", this.state.user)
     }
 
-    render() {
-        console.log("rendererndnenfenf")
-        return (
-            <View style={styles.container}>
-                <Text style={styles.logo}>Epicture</Text>
+    isLogged() {
+        if (this.state.user == null) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    loginPage() {
+        if (!this.isLogged()) {
+            return <View>
                 <TouchableOpacity style={styles.loginBtn} onPress={this.login}>
-                    <Text style={styles.loginText}>Se connecter</Text>
+                    <Text style={styles.loginText}>Connect with imgur</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() =>
                         this.props.navigation.navigate('Home')
                     }>
-                    <Text>Continuer sans se connecter</Text>
+                    <Text>Continue without connexion</Text>
                 </TouchableOpacity>
+            </View>
+        } else {
+            return <View>
+                <TouchableOpacity
+                    style={styles.loginBtn}
+                    onPress={() =>
+                        this.props.navigation.navigate('Home')
+                    }>
+                    <Text>Home page</Text>
+                </TouchableOpacity>
+            </View>
+        }
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.logo}>Epicture</Text>
+                {this.loginPage()}
+
             </View>
         );
     }
