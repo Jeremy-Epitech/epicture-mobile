@@ -8,7 +8,6 @@ export default class DisplayImg extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props)
 
     }
 

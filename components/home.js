@@ -16,7 +16,6 @@ export default class Home extends Component {
 
     componentDidMount() {
         this.callImgur();
-        console.log(this.state.images)
     }
 
 
@@ -62,7 +61,6 @@ export default class Home extends Component {
     };
 
     render() {
-        console.log(this.state.images)
         return (
             // <h1>ezzabu</h1>
             <View style={styles.container}>

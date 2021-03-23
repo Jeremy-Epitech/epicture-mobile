@@ -1,6 +1,6 @@
 import React from 'react';
 import * as AuthSession from 'expo-auth-session';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Linking } from 'react-native';
 import imgur from '../constants/imgur';
 
 export default class Login extends React.Component {
@@ -18,12 +18,15 @@ export default class Login extends React.Component {
         console.log('ok');
 
         if (this.state.user == null) {
-            let redirectUrl = 'https://epic.nayet.pineau/callback';
-            const resp = (await AuthSession.startAsync({
-                authUrl: `https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`,
-                returnUrl: redirectUrl
-            })).params;
-            console.log(resp)
+
+            // let redirectUrl = 'https://www.Epicture-Pineau-Nayet.com/';
+            // const resp = (await AuthSession.startAsync({
+            //     authUrl: `https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`,
+            //     returnUrl: redirectUrl
+            // })).params;
+            const res = await Linking.openURL(`https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`)
+            console.log(window.location.href)
+
         } else {
             console.log('already logged as ' + this.state.user.account_username);
         }
