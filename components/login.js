@@ -91,6 +91,18 @@ export default class Login extends React.Component {
                     }>
                     <Text style={styles.loginText}>Home page</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.loginBtn}
+                    onPress={() =>
+                        this.props.navigation.navigate('Profil')
+                    }>
+                    <Text style={styles.loginText}>Profil page</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.loginBtn}
+                    onPress={() => console.log('logout to do')}>
+                    <Text style={styles.loginText}>Logout</Text>
+                </TouchableOpacity>
             </View>
         }
     }

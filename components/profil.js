@@ -1,9 +1,10 @@
 import React, { Component, useState } from 'react';
-import { Text, ScrollView, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Text, ImageBackground, TouchableOpacity, View, StyleSheet, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import DisplayImg from './displayImg';
 import axios from 'axios';
-import imgur from '../constants/imgur';
+import imgur from '../constants/imgur'
 
 
 export default class Home extends Component {
@@ -31,12 +32,11 @@ export default class Home extends Component {
                     user: { access_token: value, isLogged: true }
                 })
             }
-            console.log('ici value: ' + value)
         } catch (e) {
+            console.log(e)
             // error reading value
         }
     }
-
 
     callImgur() {
         axios.get(`${imgur.dev.apiUrl}/3/gallery/hot/viral`, {
@@ -49,6 +49,10 @@ export default class Home extends Component {
             console.log(err)
         });
     };
+
+    favoriteImgur() {
+
+    }
 
     pushImgs(res) {
         res.forEach(element => {
@@ -81,7 +85,6 @@ export default class Home extends Component {
 
     render() {
         return (
-            // <h1>ezzabu</h1>
             <View style={styles.container}>
                 <View style={styles.fixToText}>
                     <TouchableOpacity
@@ -96,9 +99,9 @@ export default class Home extends Component {
                         style={styles.button}
                         title=""
                         onPress={() =>
-                            this.props.navigation.navigate('Profil')
+                            this.props.navigation.navigate('Home')
                         }>
-                        <Text style={styles.text}>Profil page</Text>
+                        <Text style={styles.text}>Home page</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -146,4 +149,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderRadius: 25,
     },
+    images: {
+        position: 'relative',
+        width: 50,
+        height: 75,
+    }
 });
