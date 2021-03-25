@@ -24,14 +24,12 @@ export default class Home extends Component {
     getData = async (item) => {
         try {
             const value = await AsyncStorage.getItem(item)
-            if (value !== null) {
+            if (value && typeof (value) != 'undefined') {
                 // value previously stored
-                console.log(`la value: ${value}`)
                 this.setState({
                     user: { access_token: value, isLogged: true }
                 })
             }
-            console.log('ici value: ' + value)
         } catch (e) {
             // error reading value
         }
@@ -92,14 +90,15 @@ export default class Home extends Component {
                         }>
                         <Text style={styles.text}>User page</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.button}
-                        title=""
-                        onPress={() =>
-                            this.props.navigation.navigate('Profil')
-                        }>
-                        <Text style={styles.text}>Profil page</Text>
-                    </TouchableOpacity>
+                    {this.state.user !== null &&
+                        <TouchableOpacity
+                            style={styles.button}
+                            title=""
+                            onPress={() =>
+                                this.props.navigation.navigate('Profil')
+                            }>
+                            <Text style={styles.text}>Profil page</Text>
+                        </TouchableOpacity>}
                 </View>
 
                 <DisplayImg images={this.state.images}></DisplayImg>
@@ -122,8 +121,8 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 40,
-        marginBottom: 10,
+        marginTop: 15,
+        marginBottom: 20,
         padding: 20
     },
     fixToText: {

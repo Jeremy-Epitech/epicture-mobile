@@ -20,6 +20,7 @@ export default class Home extends Component {
     componentDidMount() {
         this.getData('access_token');
         this.getData('account_username');
+        console.log(this.state)
     }
 
     getData = async (item) => {
@@ -56,10 +57,25 @@ export default class Home extends Component {
     };
 
     favoriteImgur() {
+        axios.get(`${imgur.dev.apiUrl}/3/account/${this.state.user.account_username}/gallery_favorites`, {
+            headers: {
+                Authorization: `Client-ID ${imgur.client.CLIENT_ID}`
+            }
+        }).then(response => {
+            this.pushImgs(response.data.data);
+        }).catch(err => {
+            console.log(err)
+        });
+    };
+
+    favoriteImgur() {
 
     }
 
     pushImgs(res) {
+        this.setState({
+            user: null
+        });
         res.forEach(element => {
             let img;
             let imgs = [];
@@ -108,23 +124,24 @@ export default class Home extends Component {
                         }>
                         <Text style={styles.text}>Home page</Text>
                     </TouchableOpacity>
-
+                </View>
+                <View style={styles.fixToText}>
                     {/* Bouton pour récupérer les images du compte */}
                     <TouchableOpacity
                         style={styles.button}
                         title=""
-                        onPress={this.callIgmur()}>
+                        onPress={this.favoriteImgur()}>
                         <Text style={styles.text}>Favorites</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.button}
                         title=""
-                        onPress={this.callIgmur()}>
+                        onPress={this.callImgur()}>
                         <Text style={styles.text}>My post</Text>
                     </TouchableOpacity>
                 </View>
+                {this.state.images !== [] && <DisplayImg images={this.state.images}></DisplayImg>}
 
-                <DisplayImg images={this.state.images}></DisplayImg>
             </View>
         );
     }
@@ -144,7 +161,7 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 40,
+        marginTop: 10,
         marginBottom: 10,
         padding: 20
     },

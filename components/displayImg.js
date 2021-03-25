@@ -19,7 +19,10 @@ export default class DisplayImg extends Component {
                     {data.imgs.img.slice((data.imgs.img.length - 4), data.imgs.img.length) != '.mp4' &&
                         <View style={styles.imgContainer}>
                             <Text style={styles.text} >{data.title}</Text>
-                            <Image style={styles.images} resizeMode={"contain"} source={{ uri: data.imgs.img }} ></Image>
+                            <Image
+                                style={styles.images} resizeMode={"contain"}
+                                source={{ uri: data.imgs.img }}
+                                defaultSource={require('../assets/loading.gif')}></Image>
                         </View>
                     }
                 </View>

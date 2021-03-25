@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Linking } from 'react-native';
+import { Text, View, TouchableOpacity, Linking, TouchableNativeFeedbackBase } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { parseURl } from './function';
 import imgur from '../constants/imgur';
@@ -15,6 +15,8 @@ export default class Login extends React.Component {
 
     componentDidMount() {
         this.setStorage();
+        this.getData('access_token');
+        this.getData('account_username');
     }
 
     storeData = async (item, value) => {
@@ -28,14 +30,20 @@ export default class Login extends React.Component {
     getData = async (item) => {
         try {
             const value = await AsyncStorage.getItem(item)
-            if (!value && typeof (value) !== 'undefined') {
+            if (value && typeof (value) != 'undefined') {
                 // value previously stored
-                console.log(`la value: ${value}`)
-                this.setState(prevState => ({
-                    user: { ...prevState.user, access_token: value, isLogged: true }
-                }))
+                if (item === 'access_token')
+                    this.setState(prevState => ({
+                        user: { ...prevState.user, access_token: value, isLogged: true }
+                    }));
+
+                if (item === 'account_username')
+                    this.setState(prevState => ({
+                        user: { ...prevState.user, account_username: value }
+                    }));
             }
         } catch (e) {
+            console.log(e)
             // error reading value
         }
     }
@@ -61,7 +69,7 @@ export default class Login extends React.Component {
 
         const { access_token, account_id, account_username, expires_in, refresh_token, token_type } = parseURl(url);
 
-        if (!access_token && typeof (access_token) !== 'undefined') {
+        if (access_token && typeof (access_token) !== 'undefined') {
             this.storeData('access_token', access_token);
             this.storeData('account_username', account_username);
 
@@ -69,6 +77,14 @@ export default class Login extends React.Component {
                 user: { access_token, account_id, account_username, expires_in, refresh_token, token_type }
             });
         }
+    }
+
+    logout() {
+        this.removeData('access_token');
+        this.removeData('account_username');
+        this.setState({
+            user: null
+        })
     }
 
     loginPage() {
@@ -86,6 +102,7 @@ export default class Login extends React.Component {
             </View>
         } else {
             return <View>
+                <Text style={styles.name}>{this.state.user.account_username}</Text>
                 <TouchableOpacity
                     style={styles.loginBtn}
                     onPress={() =>
@@ -102,7 +119,7 @@ export default class Login extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.loginBtn}
-                    onPress={() => console.log('logout to do')}>
+                    onPress={() => this.logout()}>
                     <Text style={styles.loginText}>Logout</Text>
                 </TouchableOpacity>
             </View>
@@ -133,6 +150,12 @@ const styles = {
         color: "#00b5ad",
         marginBottom: 40
     },
+    name: {
+        fontWeight: "bold",
+        fontSize: 30,
+        color: "white",
+        marginBottom: 40
+    },
     loginBtn: {
         // width: "80%",
         backgroundColor: "#00b5ad",
@@ -140,7 +163,7 @@ const styles = {
         height: 50,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 40,
+        marginTop: 20,
         marginBottom: 10,
         padding: 20
     },
