@@ -20,7 +20,7 @@ export default class Home extends Component {
     componentDidMount() {
         this.getData('access_token');
         this.getData('account_username');
-        console.log(this.state)
+        // this.favoriteImgur();
     }
 
     getData = async (item) => {
@@ -44,18 +44,6 @@ export default class Home extends Component {
         }
     }
 
-    callImgur() {
-        axios.get(`${imgur.dev.apiUrl}/3/gallery/hot/viral`, {
-            headers: {
-                Authorization: `Client-ID ${imgur.client.CLIENT_ID}`
-            }
-        }).then(response => {
-            this.pushImgs(response.data.data);
-        }).catch(err => {
-            console.log(err)
-        });
-    };
-
     favoriteImgur() {
         axios.get(`${imgur.dev.apiUrl}/3/account/${this.state.user.account_username}/gallery_favorites`, {
             headers: {
@@ -68,13 +56,9 @@ export default class Home extends Component {
         });
     };
 
-    favoriteImgur() {
-
-    }
-
     pushImgs(res) {
         this.setState({
-            user: null
+            images: []
         });
         res.forEach(element => {
             let img;
@@ -130,17 +114,17 @@ export default class Home extends Component {
                     <TouchableOpacity
                         style={styles.button}
                         title=""
-                        onPress={this.favoriteImgur()}>
+                        onPress={() => this.favoriteImgur()}>
                         <Text style={styles.text}>Favorites</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.button}
                         title=""
-                        onPress={this.callImgur()}>
+                        onPress={() => { }}>
                         <Text style={styles.text}>My post</Text>
                     </TouchableOpacity>
                 </View>
-                {this.state.images !== [] && <DisplayImg images={this.state.images}></DisplayImg>}
+                {this.state.images.length > 0 && <DisplayImg images={this.state.images}></DisplayImg>}
 
             </View>
         );

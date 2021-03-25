@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Text, ScrollView, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DisplayImg from './displayImg';
 import axios from 'axios';
 import imgur from '../constants/imgur';
@@ -31,6 +31,7 @@ export default class Home extends Component {
                 })
             }
         } catch (e) {
+            console.log(e)
             // error reading value
         }
     }
