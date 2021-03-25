@@ -14,7 +14,7 @@ export default class Login extends React.Component {
     }
 
     componentDidMount() {
-        this.getData('access_token');
+        this.setStorage();
     }
 
     storeData = async (item, value) => {
@@ -28,12 +28,12 @@ export default class Login extends React.Component {
     getData = async (item) => {
         try {
             const value = await AsyncStorage.getItem(item)
-            if (value !== null) {
+            if (!value && typeof (value) !== 'undefined') {
                 // value previously stored
                 console.log(`la value: ${value}`)
-                this.setState({
-                    user: { access_token: value, isLogged: true }
-                })
+                this.setState(prevState => ({
+                    user: { ...prevState.user, access_token: value, isLogged: true }
+                }))
             }
         } catch (e) {
             // error reading value
@@ -51,7 +51,6 @@ export default class Login extends React.Component {
     login = async () => {
         if (this.state.user == null) {
             await Linking.openURL(`https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`)
-            this.setStorage();
         } else {
             console.log('already logged as ' + this.state.user.account_username);
         }
@@ -61,12 +60,15 @@ export default class Login extends React.Component {
         const url = window.location.href;
 
         const { access_token, account_id, account_username, expires_in, refresh_token, token_type } = parseURl(url);
-        this.setState({
-            user: { access_token, account_id, account_username, expires_in, refresh_token, token_type }
-        });
-        console.log(access_token)
 
-        this.storeData('access_token', access_token);
+        if (!access_token && typeof (access_token) !== 'undefined') {
+            this.storeData('access_token', access_token);
+            this.storeData('account_username', account_username);
+
+            this.setState({
+                user: { access_token, account_id, account_username, expires_in, refresh_token, token_type }
+            });
+        }
     }
 
     loginPage() {

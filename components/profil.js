@@ -19,18 +19,23 @@ export default class Home extends Component {
 
     componentDidMount() {
         this.getData('access_token');
-        this.callImgur();
+        this.getData('account_username');
     }
 
     getData = async (item) => {
         try {
             const value = await AsyncStorage.getItem(item)
-            if (value !== null) {
+            if (value !== null && value != undefined) {
                 // value previously stored
-                console.log(`la value: ${value}`)
-                this.setState({
-                    user: { access_token: value, isLogged: true }
-                })
+                if (item === 'access_token')
+                    this.setState(prevState => ({
+                        user: { ...prevState.user, access_token: value, isLogged: true }
+                    }));
+
+                if (item === 'account_username')
+                    this.setState(prevState => ({
+                        user: { ...prevState.user, account_username: value }
+                    }));
             }
         } catch (e) {
             console.log(e)
@@ -102,6 +107,20 @@ export default class Home extends Component {
                             this.props.navigation.navigate('Home')
                         }>
                         <Text style={styles.text}>Home page</Text>
+                    </TouchableOpacity>
+
+                    {/* Bouton pour récupérer les images du compte */}
+                    <TouchableOpacity
+                        style={styles.button}
+                        title=""
+                        onPress={this.callIgmur()}>
+                        <Text style={styles.text}>Favorites</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        title=""
+                        onPress={this.callIgmur()}>
+                        <Text style={styles.text}>My post</Text>
                     </TouchableOpacity>
                 </View>
 
