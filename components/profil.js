@@ -1,9 +1,10 @@
 import React, { Component, useState } from 'react';
-import { Text, ScrollView, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, ImageBackground, TouchableOpacity, View, StyleSheet, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import DisplayImg from './displayImg';
 import axios from 'axios';
-import imgur from '../constants/imgur';
+import imgur from '../constants/imgur'
 
 
 export default class Home extends Component {
@@ -18,17 +19,24 @@ export default class Home extends Component {
 
     componentDidMount() {
         this.getData('access_token');
-        this.callImgur();
+        this.getData('account_username');
+        // this.favoriteImgur();
     }
 
     getData = async (item) => {
         try {
             const value = await AsyncStorage.getItem(item)
-            if (value && typeof (value) != 'undefined') {
+            if (value !== null && value != undefined) {
                 // value previously stored
-                this.setState({
-                    user: { access_token: value, isLogged: true }
-                })
+                if (item === 'access_token')
+                    this.setState(prevState => ({
+                        user: { ...prevState.user, access_token: value, isLogged: true }
+                    }));
+
+                if (item === 'account_username')
+                    this.setState(prevState => ({
+                        user: { ...prevState.user, account_username: value }
+                    }));
             }
         } catch (e) {
             console.log(e)
@@ -36,11 +44,22 @@ export default class Home extends Component {
         }
     }
 
-
-    callImgur() {
-        axios.get(`${imgur.dev.apiUrl}/3/gallery/hot/viral`, {
+    favoriteImgur() {
+        axios.get(`${imgur.dev.apiUrl}/3/account/${this.state.user.account_username}/gallery_favorites`, {
             headers: {
                 Authorization: `Client-ID ${imgur.client.CLIENT_ID}`
+            }
+        }).then(response => {
+            this.pushImgs(response.data.data);
+        }).catch(err => {
+            console.log(err)
+        });
+    };
+
+    myPostImgur() {
+        axios.get(`${imgur.dev.apiUrl}/3/account/me/images`, {
+            headers: {
+                Authorization: `Bearer ${this.state.user.access_token}`
             }
         }).then(response => {
             this.pushImgs(response.data.data);
@@ -83,7 +102,6 @@ export default class Home extends Component {
 
     render() {
         return (
-            // <h1>ezzabu</h1>
             <View style={styles.container}>
                 <View style={styles.fixToText}>
                     <TouchableOpacity
@@ -98,22 +116,28 @@ export default class Home extends Component {
                         style={styles.button}
                         title=""
                         onPress={() =>
-                            this.props.navigation.navigate('Search')
+                            this.props.navigation.navigate('Home')
                         }>
-                        <Text style={styles.text}>Search page</Text>
+                        <Text style={styles.text}>Home page</Text>
                     </TouchableOpacity>
-                    {this.state.user !== null &&
-                        <TouchableOpacity
-                            style={styles.button}
-                            title=""
-                            onPress={() =>
-                                this.props.navigation.navigate('Profil')
-                            }>
-                            <Text style={styles.text}>Profil page</Text>
-                        </TouchableOpacity>}
                 </View>
+                <View style={styles.fixToText}>
+                    {/* Bouton pour récupérer les images du compte */}
+                    <TouchableOpacity
+                        style={styles.button}
+                        title=""
+                        onPress={() => this.favoriteImgur()}>
+                        <Text style={styles.text}>Favorites</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        title=""
+                        onPress={() => this.myPostImgur()}>
+                        <Text style={styles.text}>My post</Text>
+                    </TouchableOpacity>
+                </View>
+                {this.state.images.length > 0 && <DisplayImg images={this.state.images}></DisplayImg>}
 
-                <DisplayImg images={this.state.images}></DisplayImg>
             </View>
         );
     }
@@ -130,12 +154,12 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: "#00b5ad",
         borderRadius: 25,
-        height: 38,
+        height: 50,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 15,
-        marginBottom: 20,
-        padding: 12
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 20
     },
     fixToText: {
         flexDirection: 'row',
@@ -143,7 +167,23 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "white",
-        fontSize: 15,
+        fontSize: 18,
         fontWeight: "bold",
     },
+    inputext: {
+        width: 200,
+        height: 44,
+        padding: 10,
+        fontWeight: 'bold',
+        borderWidth: 1,
+        borderColor: 'black',
+        backgroundColor: 'white',
+        marginBottom: 10,
+        borderRadius: 25,
+    },
+    images: {
+        position: 'relative',
+        width: 50,
+        height: 75,
+    }
 });

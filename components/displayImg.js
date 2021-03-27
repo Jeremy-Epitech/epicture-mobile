@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Text, Image, ScrollView, View, StyleSheet, Dimensions } from 'react-native';
-
+import { Video } from 'expo-av';
 
 export default class DisplayImg extends Component {
     constructor(props) {
@@ -8,7 +8,6 @@ export default class DisplayImg extends Component {
     }
 
     componentDidMount() {
-
     }
 
     render() {
@@ -16,11 +15,25 @@ export default class DisplayImg extends Component {
         const List = this.props.images.map((data, i) => {
             return (
                 <View key={i}>
-                    {data.imgs.img.slice((data.imgs.img.length - 4), data.imgs.img.length) != '.mp4' &&
+                    <Text style={styles.text} >{data.title}</Text>
+                    {data.imgs.img.slice((data.imgs.img.length - 4), data.imgs.img.length) == '.mp4' &&
                         <View style={styles.imgContainer}>
-                            <Text style={styles.text} >{data.title}</Text>
-                            <Image style={styles.images} resizeMode={"contain"} source={{ uri: data.imgs.img }} ></Image>
+                            <Video
+                                ref={(ref) => { this.player = ref }}
+                                style={styles.images}
+                                source={{ uri: data.imgs.img }}
+                                useNativeControls
+                                resizeMode="contain"
+                                isLooping={false}
+                            />
+
                         </View>
+                    }
+                    {data.imgs.img.slice((data.imgs.img.length - 4), data.imgs.img.length) != '.mp4' &&
+                        <Image
+                            style={styles.images} resizeMode={"contain"}
+                            source={{ uri: data.imgs.img }}
+                            defaultSource={require('../assets/loading.gif')}></Image>
                     }
                 </View>
             )

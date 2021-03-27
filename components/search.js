@@ -1,24 +1,23 @@
 import React, { Component, useState } from 'react';
-import { Text, ScrollView, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DisplayImg from './displayImg';
 import axios from 'axios';
 import imgur from '../constants/imgur';
 
 
-export default class Home extends Component {
+export default class Search extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             images: [],
             user: null,
+            tag: ''
         };
     }
 
     componentDidMount() {
         this.getData('access_token');
-        this.callImgur();
     }
 
     getData = async (item) => {
@@ -36,14 +35,13 @@ export default class Home extends Component {
         }
     }
 
-
-    callImgur() {
-        axios.get(`${imgur.dev.apiUrl}/3/gallery/hot/viral`, {
+    searchTagImgur() {
+        axios.get(`${imgur.dev.apiUrl}/3/gallery/t/${this.state.tag}`, {
             headers: {
                 Authorization: `Client-ID ${imgur.client.CLIENT_ID}`
             }
         }).then(response => {
-            this.pushImgs(response.data.data);
+            this.pushImgs(response.data.data.items);
         }).catch(err => {
             console.log(err)
         });
@@ -53,32 +51,34 @@ export default class Home extends Component {
         this.setState({
             images: []
         });
-        res.forEach(element => {
-            let img;
-            let imgs = [];
-            if (element.images) {
-                element.images.forEach(image => {
+        if (res.length > 0) {
+            res.forEach(element => {
+                let img;
+                let imgs = [];
+                if (element.images) {
+                    element.images.forEach(image => {
+                        img = {
+                            description: image.title,
+                            img: image.link
+                        }
+                    })
+                } else {
                     img = {
-                        description: image.title,
-                        img: image.link
+                        description: '',
+                        img: element.link
                     }
-                })
-            } else {
-                img = {
-                    description: '',
-                    img: element.link
                 }
-            }
-            imgs.push(img)
-            const imgData = {
-                title: element.title,
-                imgs: img,
-                date: element.datetime
-            };
-            this.setState({
-                images: [...this.state.images, imgData],
-            });
-        })
+                imgs.push(img)
+                const imgData = {
+                    title: element.title,
+                    imgs: img,
+                    date: element.datetime
+                };
+                this.setState({
+                    images: [...this.state.images, imgData],
+                });
+            })
+        }
     };
 
     render() {
@@ -86,34 +86,21 @@ export default class Home extends Component {
             // <h1>ezzabu</h1>
             <View style={styles.container}>
                 <View style={styles.fixToText}>
+                    <TextInput
+                        style={styles.inputext}
+                        placeholder="Tag search"
+                        onChangeText={text => this.setState({ tag: text })}
+                    // defaultValue={this.state.tag}
+                    />
                     <TouchableOpacity
                         style={styles.button}
                         title=""
-                        onPress={() =>
-                            this.props.navigation.navigate('Login')
-                        }>
-                        <Text style={styles.text}>User page</Text>
+                        onPress={() => this.searchTagImgur()}>
+                        <Text style={styles.text}>Search !</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.button}
-                        title=""
-                        onPress={() =>
-                            this.props.navigation.navigate('Search')
-                        }>
-                        <Text style={styles.text}>Search page</Text>
-                    </TouchableOpacity>
-                    {this.state.user !== null &&
-                        <TouchableOpacity
-                            style={styles.button}
-                            title=""
-                            onPress={() =>
-                                this.props.navigation.navigate('Profil')
-                            }>
-                            <Text style={styles.text}>Profil page</Text>
-                        </TouchableOpacity>}
                 </View>
 
-                <DisplayImg images={this.state.images}></DisplayImg>
+                {this.state.images.length > 0 && <DisplayImg images={this.state.images}></DisplayImg>}
             </View>
         );
     }
@@ -145,5 +132,18 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 15,
         fontWeight: "bold",
+    },
+    inputext: {
+        width: 170,
+        height: 38,
+        padding: 10,
+        fontWeight: 'bold',
+        borderWidth: 1,
+        borderColor: '#00b5ad',
+        backgroundColor: 'white',
+        marginTop: 15,
+        marginBottom: 20,
+        padding: 12,
+        borderRadius: 25,
     },
 });
