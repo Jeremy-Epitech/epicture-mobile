@@ -20,8 +20,10 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+  
   <!-- END OPTIONAL PERMISSIONS -->
   <application
+    android:largeHeap="true"
     android:name=".MainApplication"
     android:label="@string/app_name"
     android:icon="@mipmap/ic_launcher"
@@ -29,17 +31,24 @@
     android:allowBackup="false"
     android:theme="@style/AppTheme"
   >
-    <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="YOUR-APP-URL-HERE"/>
-    <meta-data android:name="expo.modules.updates.EXPO_SDK_VERSION" android:value="YOUR-APP-SDK-VERSION-HERE"/>
-    <activity
-      android:name=".MainActivity"
+    <meta-data android:name="expo.modules.updates.EXPO_UPDATE_URL" android:value="https://exp.host/@jeremy-epitech/Epicture-Pineau-Nayet" />
+    <meta-data android:name="expo.modules.updates.EXPO_SDK_VERSION" android:value="40.0.0" />
+    <meta-data android:name="expo.modules.updates.EXPO_RELEASE_CHANNEL" android:value="default" />
+
+  <activity
+    android:name=".MainActivity"
       android:label="@string/app_name"
       android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
       android:launchMode="singleTask"
       android:windowSoftInputMode="adjustResize"
       android:theme="@style/Theme.App.SplashScreen"
     >
-      <intent-filter>
+      <intent-filter android:autoVerify="true">
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="epic.nayet.pineau" />
+          
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
