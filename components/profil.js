@@ -56,6 +56,18 @@ export default class Home extends Component {
         });
     };
 
+    myPostImgur() {
+        axios.get(`${imgur.dev.apiUrl}/3/account/me/images`, {
+            headers: {
+                Authorization: `Bearer ${this.state.user.access_token}`
+            }
+        }).then(response => {
+            this.pushImgs(response.data.data);
+        }).catch(err => {
+            console.log(err)
+        });
+    };
+
     pushImgs(res) {
         this.setState({
             images: []
@@ -120,7 +132,7 @@ export default class Home extends Component {
                     <TouchableOpacity
                         style={styles.button}
                         title=""
-                        onPress={() => { }}>
+                        onPress={() => this.myPostImgur()}>
                         <Text style={styles.text}>My post</Text>
                     </TouchableOpacity>
                 </View>

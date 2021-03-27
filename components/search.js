@@ -36,15 +36,12 @@ export default class Search extends Component {
     }
 
     searchTagImgur() {
-        console.log(this.state)
-
         axios.get(`${imgur.dev.apiUrl}/3/gallery/t/${this.state.tag}`, {
             headers: {
                 Authorization: `Client-ID ${imgur.client.CLIENT_ID}`
             }
         }).then(response => {
             this.pushImgs(response.data.data.items);
-            console.log(response)
         }).catch(err => {
             console.log(err)
         });
