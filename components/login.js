@@ -58,7 +58,14 @@ export default class Login extends React.Component {
 
     login = async () => {
         if (this.state.user == null) {
-            await Linking.openURL(`https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`)
+            // let redirectUrl = 'epicture://';
+
+            // user = (await AuthSession.startAsync({
+            //     authUrl: `https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`,
+            //     returnUrl: redirectUrl
+            // })).params;
+
+            await Linking.openURL(`https://api.imgur.com/oauth2/authorize?response_type=token&client_id=${imgur.client.CLIENT_ID}`);
         } else {
             console.log('already logged as ' + this.state.user.account_username);
         }
@@ -67,14 +74,14 @@ export default class Login extends React.Component {
     setStorage() {
         const url = window.location.href;
 
-        const { access_token, account_id, account_username, expires_in, refresh_token, token_type } = parseURl(url);
+        const { access_token, account_id, account_username, refresh_token } = parseURl(url);
 
         if (access_token && typeof (access_token) !== 'undefined') {
             this.storeData('access_token', access_token);
             this.storeData('account_username', account_username);
 
             this.setState({
-                user: { access_token, account_id, account_username, expires_in, refresh_token, token_type }
+                user: { access_token, account_id, account_username, refresh_token }
             });
         }
     }
